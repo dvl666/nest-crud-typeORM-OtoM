@@ -1,4 +1,5 @@
 import { 
+    IsDate,
     IsInt,
     IsOptional, 
     IsPositive, 
@@ -19,5 +20,9 @@ export class CreateCatDto {
     @IsString()
     @IsOptional()
     breed?: string;
+
+    @IsDate()
+    @IsOptional()
+    deleteAt?: Date
 
 }
