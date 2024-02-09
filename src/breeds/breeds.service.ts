@@ -1,11 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBreedDto } from './dto/create-breed.dto';
 import { UpdateBreedDto } from './dto/update-breed.dto';
+import { Breed } from './entities/breed.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class BreedsService {
-  create(createBreedDto: CreateBreedDto) {
-    return 'This action adds a new breed';
+
+  constructor(
+    @InjectRepository(Breed)
+    private readonly breedRepository: Repository<Breed>
+  ) {}
+
+  async create(createBreedDto: CreateBreedDto) {
+    const breed = this.breedRepository.create(createBreedDto);
+    return await this.breedRepository.save(breed);
   }
 
   findAll() {
