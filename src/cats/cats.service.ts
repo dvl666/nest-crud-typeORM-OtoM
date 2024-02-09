@@ -13,24 +13,27 @@ export class CatsService {
     private readonly catRepository: Repository<Cat>
   ) {}
 
-  create(createCatDto: CreateCatDto) {
-    return 'This action adds a new cat';
+  async create(createCatDto: CreateCatDto) {
+
+    const cat = this.catRepository.create(createCatDto);
+    return await this.catRepository.save(cat);
   }
 
   async findAll() {
     return await this.catRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} cat`;
+  async findOne(id: number) {
+    return await  this.catRepository.findOneBy({id});
   }
 
   update(id: number, updateCatDto: UpdateCatDto) {
     return `This action updates a #${id} cat`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} cat`;
+  async remove(id: number) { 
+    return await this.catRepository.softDelete({id}); //se le pasa la id
+    // return await this.catRepository.softRemove({id}); //se le pasa la instancia
   }
 }
  
