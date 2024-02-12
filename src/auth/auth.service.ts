@@ -43,7 +43,7 @@ export class AuthService {
 
     async login({ email, password }: LoginDto) {
 
-        const user = await this.userService.findOneByEmail(email);
+        const user = await this.userService.findOneByEmailWithPassword(email);
 
         if(!user) throw new UnauthorizedException('email is wrong');
 
