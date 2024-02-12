@@ -1,9 +1,12 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthGuard } from './guard/auth.guard';
+import { Request } from 'express';
+import { RequestWithUser } from 'src/users/interfaces/request.with.user';
+import { Roles } from './decorators/roles.decorators';
+import { RolesGuard } from './guard/roles.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -30,12 +33,13 @@ export class AuthController {
     }
 
     @Get('profile')
-    @UseGuards(AuthGuard)
+    @Roles('admin')
+    @UseGuards(AuthGuard, RolesGuard)
     profile(
-        @Request()
-        req
+        @Req()
+        req: Request & RequestWithUser
     ){
-        return req.user
+        return this.authService.profile(req.user);
     }
     
 }
