@@ -28,11 +28,16 @@ export class AuthService {
         //     registerDto.password: await bcryptjs.hash(registerDto.password, 12)
         // }) NO SIRVE
         
-        return await this.userService.create({
+        await this.userService.create({
             name,
             email,
             password: await bcryptjs.hash(password, 10)
         })
+
+        return {
+            name,
+            email
+        }
         
     }
 
@@ -46,15 +51,19 @@ export class AuthService {
         
         if(!isPasswordValid) throw new UnauthorizedException('password is wrong');
 
-        const payload = { email: user.email };
+        const payload = { email: user.email, role: user.role };
 
         const token = await this.jwtService.signAsync(payload)
 
         return {
             token,
-            email
+            email,
         };
 
+    }
+
+    async profile({email, role}: { email: string, role: string }) {
+        return await this.userService.findOneByEmail(email);
     }
 
 }
