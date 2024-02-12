@@ -20,8 +20,17 @@ export class UsersService {
     return this.userRepository.findOneBy({ email })
   }
 
-  findAll() {
-    return `This action returns all users`;
+  findOneByEmailWithPassword(email: string) {
+    return this.userRepository.findOne(
+      {
+        where: { email },
+        select: [ 'id', 'name', 'email',  'role', 'password' ],
+      }
+    );
+  }
+
+  async findAll() {
+    return await this.userRepository.find();
   }
 
   findOne(id: number) {
