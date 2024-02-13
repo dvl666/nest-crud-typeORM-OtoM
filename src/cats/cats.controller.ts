@@ -24,7 +24,7 @@ export class CatsController {
   @Get()
   findAll(
     @ActiveUser() user: UserActiveInterface
-  ) {
+    ) {
     return this.catsService.findAll(user);
   }
 
@@ -37,12 +37,19 @@ export class CatsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto) {
-    return this.catsService.update(+id, updateCatDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateCatDto: UpdateCatDto,
+    @ActiveUser() user: UserActiveInterface
+  ) {
+    return this.catsService.update(+id, updateCatDto, user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.catsService.remove(+id);
+  remove(
+    @Param('id') id: string,
+    @ActiveUser() user: UserActiveInterface
+    ) {
+      return this.catsService.remove(+id, user);
   }
 }
