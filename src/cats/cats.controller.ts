@@ -4,6 +4,8 @@ import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
 import { Auth } from 'src/auth/decorators/auth.decorators';
 import { Role } from 'src/common/enums/rol.enum';
+import { ActiveUser } from 'src/common/enums/decorators/active.user.decorator';
+import { UserActiveInterface } from 'src/common/interfaces/user.active.interface';
 
 
 @Auth(Role.USER)
@@ -12,13 +14,18 @@ export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
   @Post()
-  create(@Body() createCatDto: CreateCatDto) {
-    return this.catsService.create(createCatDto);
+  create(
+      @Body() createCatDto: CreateCatDto,
+      @ActiveUser() user: UserActiveInterface
+    ) {
+    return this.catsService.create(createCatDto, user);
   }
 
   @Get()
-  findAll() {
-    return this.catsService.findAll();
+  findAll(
+    @ActiveUser() user: UserActiveInterface
+  ) {
+    return this.catsService.findAll(user);
   }
 
   @Get(':id')
