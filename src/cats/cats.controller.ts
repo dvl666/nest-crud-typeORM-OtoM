@@ -29,8 +29,11 @@ export class CatsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.catsService.findOne(+id);
+  findOne(
+    @Param('id') id: string,
+    @ActiveUser() user: UserActiveInterface
+  ) {
+    return this.catsService.findOne(+id, user);
   }
 
   @Patch(':id')
