@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateBreedDto } from './dto/create-breed.dto';
 import { UpdateBreedDto } from './dto/update-breed.dto';
 import { Breed } from './entities/breed.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserActiveInterface } from 'src/common/interfaces/user.active.interface';
 
 @Injectable()
 export class BreedsService {
@@ -13,24 +14,42 @@ export class BreedsService {
     private readonly breedRepository: Repository<Breed>
   ) {}
 
-  async create(createBreedDto: CreateBreedDto) {
-    const breed = this.breedRepository.create(createBreedDto);
-    return await this.breedRepository.save(breed);
+  async create(createBreedDto: CreateBreedDto, user: UserActiveInterface) {
+
+    return await this.breedRepository.create({
+      ...createBreedDto,
+      name: createBreedDto.name,
+      relatedUserEmail: user.email
+    })
+
   }
 
   findAll() {
-    return `This action returns all breeds`;
+    return this.breedRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} breed`;
+  async findOne(id: number) {
+
+    const breed = await this.breedRepository.findOneBy({id: id});
+    
+    if (!breed) throw new BadRequestException('Breed not found')
+
+    return breed
   }
 
-  update(id: number, updateBreedDto: UpdateBreedDto) {
-    return `This action updates a #${id} breed`;
+  async update(id: number, updateBreedDto: UpdateBreedDto) {
+
+    await this.findOne(id)
+    return await this.breedRepository.update(
+      id, {
+        ...updateBreedDto
+      }   
+    )
+
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} breed`;
+  async remove(id: number) {
+    await this.findOne(id)
+    return await this.breedRepository.softDelete(id)   
   }
 }
