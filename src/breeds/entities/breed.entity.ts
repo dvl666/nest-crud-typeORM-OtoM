@@ -1,5 +1,6 @@
 import { Cat } from "src/cats/entities/cat.entity";
-import { Column, Entity, OneToMany } from "typeorm";
+import { User } from "src/users/entities/user.entity";
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 
 @Entity()
 export class Breed {
@@ -13,4 +14,14 @@ export class Breed {
     @OneToMany(()=> Cat , (cat) => cat.breed)
     cats: Cat[];
 
+    @DeleteDateColumn()
+    deletedAt: Date
+
+    @ManyToOne(() => User)
+    @JoinColumn({ name: 'relatedUserEmail', referencedColumnName: 'email', })
+    relatedUser: User;
+
+    @Column()
+    relatedUserEmail: string;
+    
 }
